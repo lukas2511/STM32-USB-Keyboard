@@ -64,7 +64,7 @@ const struct usb_endpoint_descriptor hid_endpoint = {
 	.bDescriptorType = USB_DT_ENDPOINT,
 	.bEndpointAddress = 0x81,
 	.bmAttributes = USB_ENDPOINT_ATTR_INTERRUPT,
-	.wMaxPacketSize = 4,
+	.wMaxPacketSize = 64,
 	.bInterval = 0x20,
 };
 
@@ -146,7 +146,7 @@ static void hid_set_config(usbd_device *usbd_dev, uint16_t wValue)
 	(void)wValue;
 	(void)usbd_dev;
 
-	usbd_ep_setup(usbd_dev, 0x81, USB_ENDPOINT_ATTR_INTERRUPT, 4, NULL);
+	usbd_ep_setup(usbd_dev, 0x81, USB_ENDPOINT_ATTR_INTERRUPT, 8, NULL);
 
 	usbd_register_control_callback(
 				usbd_dev,
@@ -161,7 +161,9 @@ static void hid_set_config(usbd_device *usbd_dev, uint16_t wValue)
 	systick_counter_enable();
 }
 
-uint8_t USBD_HID_GetStruct (uint8_t key0, uint8_t modifier)
+usbd_device *my_usb_device;
+
+uint8_t *USBD_HID_GetStruct (uint8_t key0, uint8_t modifier)
 {
   static uint8_t HID_Buffer[8];
 
@@ -177,10 +179,8 @@ uint8_t USBD_HID_GetStruct (uint8_t key0, uint8_t modifier)
   return HID_Buffer;
 }
 
-usbd_device *my_usb_device;
-
-void usb_send_packet(const void *buf){
-	usbd_ep_write_packet(my_usb_device, 0x81, buf, 8);
+void usb_send_packet(const void *buf, int len){
+	while(usbd_ep_write_packet(my_usb_device, 0x81, buf, len) == 0) usb_poll();
 }
 
 void usb_poll(void){

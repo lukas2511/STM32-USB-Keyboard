@@ -5,6 +5,20 @@
 #include "usb.h"
 #include "keycodes.h"
 
+static void sendascii(void){
+    uint8_t key0, modifier;
+    char input = usart_read();
+    usbHidKeyCodeFromAsciiChar(input, &key0, &modifier);
+    uint8_t *buf = USBD_HID_GetStruct(key0, modifier);
+    usb_send_packet(buf, 8);
+
+    buf[0] = 0;
+    buf[2] = 0;
+    usb_send_packet(buf, 8);
+
+    printf("Char: %d\r\nKeycode: %d\r\n\r\n", input, key0);
+}
+
 int main(void) {
     rcc_clock_setup_hse_3v3(&hse_8mhz_3v3[CLOCK_3V3_168MHZ]);
     rcc_periph_clock_enable(RCC_GPIOD);
@@ -17,20 +31,15 @@ int main(void) {
     gpio_toggle(GPIOD, GPIO12 | GPIO13 | GPIO14 | GPIO15);
 
     uint32_t i=0;
-    uint8_t buf[8];
-    uint8_t key0, modifier;
 
     while(1) {
         usb_poll();
         i++;
         if(usart_has_data()){
-            usbHidKeyCodeFromAsciiChar(usart_read(), &key0, &modifier);
-            printf("Keycode: %d\r\n", key0);
-            *buf = USBD_HID_GetStruct(key0, modifier);
-            usb_send_packet(buf);
+            sendascii();
+
         }
         if(i>1000000){
-            printf("%lu %lu\r\n", (long unsigned)UART_RxHead, (long unsigned)UART_RxTail);
             gpio_toggle(GPIOD, GPIO13);
             i=0;            
         }

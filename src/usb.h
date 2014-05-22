@@ -11,6 +11,6 @@
 void usb_setup(void);
 void send_test(void);
 void usb_poll(void);
-void usb_send_packet(const void *buf);
-uint8_t USBD_HID_GetStruct(uint8_t key0, uint8_t modifier);
+void usb_send_packet(const void *buf, int len);
+uint8_t *USBD_HID_GetStruct (uint8_t key0, uint8_t modifier);
 
