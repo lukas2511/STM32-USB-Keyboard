@@ -33,7 +33,6 @@ int main(void) {
     uint32_t i=0;
 
     while(1) {
-        usb_poll();
         i++;
         if(usart_has_data()){
             sendascii();
