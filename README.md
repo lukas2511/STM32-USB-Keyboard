@@ -38,4 +38,4 @@ def crc(data):
 
 ST-Wat is a simple daemon that uses stlinky and the stlink interface to send data to the stm32f4-discovery.
 
-See ```host/``` for code. Use ```make -DUSE_STTERM``` to replace USART with stlinky.
+See ```host/``` for code. Use ```make USE_STTERM=1``` to replace USART with stlinky.
