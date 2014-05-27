@@ -1,7 +1,7 @@
 STM32-USB-Keyboard
 ==================
 
-USB-OTG Keyboard on STM32F4-Discovery (part of KaputtOverIP-Project)
+USB-OTG Keyboard on STM32F4-Discovery
 
 Using [libopencm3](http://libopencm3.org/wiki/Main_Page)
 
@@ -16,7 +16,7 @@ Using [libopencm3](http://libopencm3.org/wiki/Main_Page)
 10 Bytes / Package
 
 * 0: 'S'
-* 1-8: USB HID Package Bytes<br>
+* 1-8: USB HID Package Bytes
 * 9: 'E'
 * 10: CRC
 
