@@ -55,22 +55,6 @@ static void hid_set_config(usbd_device *usbd_dev, uint16_t wValue)
 
 usbd_device *my_usb_device;
 
-uint8_t *USBD_HID_GetStruct (uint8_t key0, uint8_t modifier)
-{
-  static uint8_t HID_Buffer[8];
-
-  HID_Buffer[0] = modifier;
-  HID_Buffer[1] = 0;
-  HID_Buffer[2] = key0;
-  HID_Buffer[3] = 0;
-  HID_Buffer[4] = 0;
-  HID_Buffer[5] = 0;
-  HID_Buffer[6] = 0;
-  HID_Buffer[7] = 0;
-
-  return HID_Buffer;
-}
-
 void usb_send_packet(const void *buf, int len){
 	while(usbd_ep_write_packet(my_usb_device, 0x81, buf, len) == 0);
 }

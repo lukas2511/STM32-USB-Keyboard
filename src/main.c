@@ -4,14 +4,13 @@
 #include "crc.h"
 #include "usart.h"
 #include "usb.h"
-#include "keycodes.h"
 
 // 0: 'S'
 // 1-8: KEYS
 // 9: 'E'
 // 10: CRC
-
 char INPUT[11];
+
 char KEYS[8];
 char EMPTY[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
