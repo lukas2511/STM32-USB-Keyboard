@@ -12,11 +12,9 @@
 char INPUT[11];
 
 char KEYS[8];
-char EMPTY[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 static void sendkeys(void){
     usb_send_packet(KEYS, 8);
-//    usb_send_packet(EMPTY, 8);
 }
 
 int main(void) {
@@ -40,11 +38,11 @@ int main(void) {
         if(usart_has_data()){
             INPUT[k] = usart_read();
             k++;
-            if(k==1 && INPUT[0]!=0x53){
+            if(k==1 && INPUT[0]!=0x53){ // 'S'
                 printf("ERROR AT START-BYTE %d\r\n",INPUT[0]);
                 k=0;
             }
-            if(k==10 && INPUT[9]!=0x45){
+            if(k==10 && INPUT[9]!=0x45){ // 'E'
                 printf("ERROR AT END-BYTE %d\r\n",INPUT[8]);
                 k=0;
             }
@@ -59,8 +57,6 @@ int main(void) {
                 }
                 k=0;
             }
-//            sendascii();
-
         }
         if(i>1000000){
             gpio_toggle(GPIOD, GPIO13);
