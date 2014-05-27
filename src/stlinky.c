@@ -11,11 +11,13 @@
 
 #define min_t(type, a, b) ((a<b) ? a : b)
 
-static volatile struct stlinky sterm;
+#define MY_STERM (*(volatile struct stlinky*)0x20000000)
+
+//static volatile struct stlinky sterm;
     
 void stlinky_init()
 {
-    volatile struct stlinky *st=&sterm;
+    volatile struct stlinky *st=&MY_STERM;
 	st->magic = STLINKY_MAGIC;
 	st->bufsize = CONFIG_LIB_STLINKY_BSIZE;
 }
@@ -44,20 +46,20 @@ int stlinky_rx(volatile struct stlinky* st, char* buf, int siz)
 int stlinky_default_getchar() {
     static int read=CONFIG_LIB_STLINKY_BSIZE;
 
-    if (!sterm.rxsize)
+    if (!MY_STERM.rxsize)
         return -1;
 
-    int res=sterm.rxbuf[read++];
+    int res=MY_STERM.rxbuf[read++];
     
-    if (read==sterm.rxsize) {
-        sterm.rxsize=0;
+    if (read==MY_STERM.rxsize) {
+        MY_STERM.rxsize=0;
         read=0;
     }
     return res;
 }
 
 int stlinky_rx_ready(void) {
-    return sterm.rxsize;
+    return MY_STERM.rxsize;
 }
 
 void stlinky_wait_for_terminal(volatile struct stlinky* st)
@@ -73,10 +75,10 @@ int _read(int file, char *ptr, int len);
 
 int _write(int file, char *ptr, int len) {
     file=file; // fix unused warning
-    return stlinky_tx(&sterm, ptr, len);
+    return stlinky_tx(&MY_STERM, ptr, len);
 }
 
 int _read(int file, char *ptr, int len) {
     file=file; // fix unused warning
-	return stlinky_rx(&sterm, ptr, len);
+	return stlinky_rx(&MY_STERM, ptr, len);
 }

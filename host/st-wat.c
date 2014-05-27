@@ -89,6 +89,7 @@ struct stlinky*  stlinky_detect(stlink_t* sl)
 			st->bufsize = (size_t) *(unsigned char*) sl->q_buf;
 			//printf("stlinky buffer size 0x%zu \n", st->bufsize);
 			multiple++;
+			break;
 		}
 	}
 	if (multiple > 0) {

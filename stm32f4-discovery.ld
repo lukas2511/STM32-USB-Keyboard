@@ -24,7 +24,8 @@
 MEMORY
 {
 	rom (rx) : ORIGIN = 0x08000000, LENGTH = 1024K
-	ram (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
+	stlinky_ram (rwx) : ORIGIN = 0x20000000, LENGTH = 4K
+	ram (rwx) : ORIGIN = 0x20001000, LENGTH = 124K
 }
 
 /* Include the common ld script. */
