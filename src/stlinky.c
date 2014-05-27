@@ -2,6 +2,8 @@
 // https://github.com/nekromant/antares
 // License GPLv2, according to
 // https://github.com/nekromant/antares/blob/master/README
+// Modified version stolen from https://github.com/onnokort/stm32f0-cc3000-echotest
+
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
