@@ -57,8 +57,6 @@ void usart2_isr(void)
 	if (((USART_CR1(USART2) & USART_CR1_RXNEIE) != 0) &&
 	    ((USART_SR(USART2) & USART_SR_RXNE) != 0)) {
 
-		gpio_toggle(GPIOD, GPIO15);
-
 		/* Retrieve the data from the peripheral. */
 		data = usart_recv(USART2);
 

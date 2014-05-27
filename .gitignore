@@ -5,3 +5,4 @@
 *.srec
 *.d
 *.o
+host/st-wat
