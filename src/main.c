@@ -104,7 +104,7 @@ void tim2_isr(void){
     if(timer_get_flag(TIM2, TIM_SR_UIF)){
         if(last_usb_request_time < (system_millis-10)){
             gpio_set(GPIOD, GPIO13);
-            if(usb_ready == 3 && system_millis>5000) scb_reset_system();
+            if(usb_ready == 3 && system_millis>5000) msleep(10);
         }else{
             if(usb_ready >= 1) usb_ready = 3;
             gpio_clear(GPIOD, GPIO13);
@@ -216,6 +216,13 @@ int main(void) {
 
     gpio_mode_setup(GPIOD, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12 | GPIO13 | GPIO14 | GPIO15);
     gpio_clear(GPIOD, GPIO12 | GPIO13 | GPIO14 | GPIO15);
+
+    iwdg_set_period_ms(500);
+    iwdg_reset();
+    msleep(400);
+    iwdg_set_period_ms(5);
+    iwdg_reset();
+
     gpio_set(GPIOD, GPIO15);
 
 //    msleep(100000); /* SLEEEEEEEEEEEEEEEEEEEEEEP */
