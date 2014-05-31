@@ -6,8 +6,8 @@
 #include <libopencm3/cm3/systick.h>
 #include <libopencm3/stm32/f4/nvic.h>
 
-#define VENDOR_ID 0x1337
-#define PRODUCT_ID 0x7331
+#define VENDOR_ID 0x6666
+#define PRODUCT_ID 0x1
 
 void usb_setup(void);
 void send_test(void);
