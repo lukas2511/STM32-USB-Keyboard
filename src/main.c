@@ -2,6 +2,7 @@
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/timer.h>
 #include <libopencm3/stm32/f4/nvic.h>
+#include <libopencm3/stm32/iwdg.h>
 #include <libopencm3/cm3/scb.h>
 
 #include "crc.h"
@@ -205,6 +206,10 @@ void tim5_isr(void){
 }
 
 int main(void) {
+    iwdg_reset();
+    iwdg_set_period_ms(5);
+    iwdg_start();
+
     rcc_clock_setup_hse_3v3(&hse_8mhz_3v3[CLOCK_3V3_168MHZ]);
     rcc_periph_clock_enable(RCC_GPIOD);
     systick_setup();
@@ -232,7 +237,7 @@ int main(void) {
 //    gpio_set(GPIOD, GPIO12 | GPIO13 | GPIO14 | GPIO15);
 
     while(1) {
-        ;
+        iwdg_reset();
     }
 
     return 0;
