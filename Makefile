@@ -1,5 +1,5 @@
 BINARY = src/main
-OBJS += src/usb.o src/crc.o src/systick.o
+OBJS += src/usb.o src/crc.o src/systick.o src/timers.o
 
 ifdef DEBUG
 CFLAGS += -DDEBUG
