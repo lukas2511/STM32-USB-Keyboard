@@ -27,6 +27,7 @@ OBJCOPY		= $(PREFIX)-objcopy
 OBJDUMP		= $(PREFIX)-objdump
 GDB		= $(PREFIX)-gdb
 FLASH		= $(shell which st-flash)
+DFU		= $(shell which dfu-util)
 
 CFLAGS		+= -Os -g -std=gnu99 \
 		   -I$(TOOLCHAIN_DIR)/include \
@@ -58,6 +59,7 @@ all: images
 
 images: $(BINARY).images
 flash: $(BINARY).flash
+dfu: $(BINARY).dfu
 
 %.images: %.bin %.hex %.srec %.list
 	@#echo "*** $* images generated ***"
@@ -98,6 +100,10 @@ clean:
 %.flash: %.bin
 	@printf "  FLASH  $<\n"
 	$(Q)$(FLASH) --reset write $(*).bin 0x8000000
+
+%.dfu: %.bin
+	@printf "  DFU  $<\n"
+	$(Q)$(DFU) -d 0483:df11 -c 1 -i 0 -a 0 -s 0x08000000 -D $(*).bin
 
 .PHONY: images clean flash
 
