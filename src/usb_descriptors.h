@@ -94,7 +94,7 @@ const struct usb_config_descriptor config = {
 	.bNumInterfaces = 1,
 	.bConfigurationValue = 1,
 	.iConfiguration = 0,
-	.bmAttributes = 0xC0,
+	.bmAttributes = 0b11000000,
 	.bMaxPower = 0x32,
 
 	.interface = ifaces,

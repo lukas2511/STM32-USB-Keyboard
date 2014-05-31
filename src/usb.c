@@ -1,8 +1,13 @@
 #include "usb.h"
 #include "usb_descriptors.h"
+#include "systick.h"
 
 /* Buffer to be used for control requests. */
 uint8_t usbd_control_buffer[128];
+
+uint8_t usb_ready = 0;
+
+volatile uint32_t last_usb_request_time;
 
 static int hid_control_request(usbd_device *usbd_dev, struct usb_setup_data *req, uint8_t **buf, uint16_t *len,
 			void (**complete)(usbd_device *usbd_dev, struct usb_setup_data *req))
@@ -17,10 +22,12 @@ static int hid_control_request(usbd_device *usbd_dev, struct usb_setup_data *req
 					if(req->wValue==0x2200){
 						*buf = (uint8_t *)hid_report_descriptor;
 						*len = sizeof(hid_report_descriptor);
+                                                if(usb_ready==0) usb_ready=1;
 						return 1;
 					}else if(req->wValue==0x2100){
 						*buf = (uint8_t *)USBD_HID_Desc;
 						*len = sizeof(USBD_HID_Desc);
+                                                return 1;
 					}
 					return 0;
 				default:
@@ -45,18 +52,14 @@ static void hid_set_config(usbd_device *usbd_dev, uint16_t wValue)
 				USB_REQ_TYPE_STANDARD | USB_REQ_TYPE_INTERFACE,
 				USB_REQ_TYPE_TYPE | USB_REQ_TYPE_RECIPIENT,
 				hid_control_request);
-
-	systick_set_clocksource(STK_CSR_CLKSOURCE_AHB_DIV8);
-	/* SysTick interrupt every N clock pulses: set reload to N-1 */
-	systick_set_reload(99999);
-	systick_interrupt_enable();
-	systick_counter_enable();
 }
 
 usbd_device *my_usb_device;
 
 void usb_send_packet(const void *buf, int len){
-	while(usbd_ep_write_packet(my_usb_device, 0x81, buf, len) == 0);
+    gpio_set(GPIOD, GPIO14);
+    while(usbd_ep_write_packet(my_usb_device, 0x81, buf, len) == 0);
+    gpio_clear(GPIOD, GPIO14);
 }
 
 void usb_setup(void)
@@ -67,6 +70,7 @@ void usb_setup(void)
 
 	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE,
 			GPIO9 | GPIO11 | GPIO12);
+
 	gpio_set_af(GPIOA, GPIO_AF10, GPIO9 | GPIO11 | GPIO12);
 
 	my_usb_device = usbd_init(&otgfs_usb_driver, &dev, &config, usb_strings, 3, usbd_control_buffer, sizeof(usbd_control_buffer));
@@ -79,4 +83,5 @@ void
 otg_fs_isr(void)
 {
 	usbd_poll(my_usb_device);
+	last_usb_request_time=system_millis;
 }
